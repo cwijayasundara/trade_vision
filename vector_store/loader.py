@@ -19,7 +19,7 @@ loader = PyPDFDirectoryLoader('../docs/10-k/')
 docs = loader.load()
 print(len(docs))
 
-persistent_dir = 'vectorstore'
+persistent_dir = '../chroma_store'
 # Split
 text_splitter = RecursiveCharacterTextSplitter(chunk_size=1000, chunk_overlap=200)
 splits = text_splitter.split_documents(docs)
@@ -29,6 +29,7 @@ vectorstore = Chroma.from_documents(documents=splits,
                                     persist_directory=persistent_dir,
                                     embedding=OpenAIEmbeddings())
 
+vectorstore.persist()
 #  retriever to test if the data is there in the vectorstore
 retriever = vectorstore.as_retriever(search_kwargs={"k": 4})
 

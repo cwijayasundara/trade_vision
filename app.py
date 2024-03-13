@@ -1,8 +1,10 @@
 import os
 import streamlit as st
+
 from dotenv import load_dotenv
-from vector_store.retriever import vector_db_reader
+from retriever import vector_db_reader
 from summeriser.summariser import summarizer
+from stock_executor import execute_stock_price_analyser
 
 load_dotenv()
 
@@ -29,7 +31,7 @@ if add_radio == "chat":
     st.write("Summarizing the 8-K File for", option)
     st.write(summarizer(documents[option]))
 
-    st.write(f"Some important facts about {option} 10-K File 2023:")
+    st.write(f"Some important facts about {option} annual financial statement 2023:")
     question_1 = f"Whats the total revenue of {option} ?"
     question_2 = f"What are the main products and services of {option} given in the 10-K file?"
     question_3 = f"Who are the main competitors of {option} given in the 10-K file?"
@@ -53,7 +55,14 @@ if add_radio == "chat":
         chat_result = vector_db_reader(request)
         st.write(chat_result)
 elif add_radio == "latest-stock-price-performance":
-    st.write("This feature is under development")
+    stock_queries = [f"",
+                     f"Draw a graph to show {option} stock price movement for the past 4 years?",
+                     f"Draw a graph to show {option} stock price movement for the last week?"]
+    stock_query = st.selectbox(f'Select {option} stock query ?', stock_queries)
+    if stock_query:
+        submit = st.button("submit", type="primary")
+        if submit:
+            chat_result = execute_stock_price_analyser(stock_query)
 elif add_radio == "news_analysis":
     st.write("This feature is under development")
 elif add_radio == "buy-sell-hold":
