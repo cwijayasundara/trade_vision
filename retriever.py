@@ -45,5 +45,5 @@ def vector_db_reader(request):
     return response
 
 
-question = "Whats the total revenue of Tesla ?"
-print(vector_db_reader(question))
+# question = "Whats the total revenue of Tesla ?"
+# print(vector_db_reader(question))

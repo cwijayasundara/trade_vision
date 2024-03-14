@@ -27,5 +27,5 @@ def execute_stock_price_analyser(message):
     user_proxy.initiate_chat(assistant, message=message)
 
 
-request = "Draw a graph to show Tesla stock price movement for the past 4 years?"
-execute_stock_price_analyser(request)
+# request = "Draw a graph to show Tesla stock price movement for the past 4 years?"
+# execute_stock_price_analyser(request)
