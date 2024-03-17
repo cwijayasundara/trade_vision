@@ -1,1 +1,16 @@
-NVIDIA Corporation reported a record-breaking financial performance for the fourth quarter and fiscal year ended January 28, 2024. The company announced a quarterly revenue of $22.1 billion, marking a 22% increase from the previous quarter and a staggering 265% increase from the previous year. The data center revenue was a significant contributor, reaching $18.4 billion for the quarter, up 27% from the previous quarter and up 409% from the previous year. For the fiscal year 2024, NVIDIA's revenue was $60.9 billion, up 126% from the previous year, with GAAP earnings per diluted share at $11.93, up 586% from the previous year. The company attributed its success to the surging demand for accelerated computing and generative AI across various industries and nations. NVIDIA's CEO, Jensen Huang, highlighted the company's diverse drivers of growth, including demand for data processing, training, and inference from large cloud-service providers, as well as enterprise software and consumer internet companies. The company also announced a quarterly cash dividend of $0.04 per share and provided an outlook for the first quarter of fiscal 2025, expecting revenue to be around $24.0 billion.
+- **Form 8-K Report Date**: February 21, 2024
+- **Company**: NVIDIA Corporation
+- **Location**: Santa Clara, CA
+- **Event Date**: February 21, 2024
+- **Fiscal Year End**: January 28, 2024
+- **Revenue**: Q4: $22.1 billion, FY: $60.9 billion
+- **Data Center Revenue**: Q4: $18.4 billion, FY: $47.5 billion
+- **Gaming Revenue**: Q4: $2.9 billion, FY: $10.4 billion
+- **Professional Visualization Revenue**: Q4: $463 million, FY: $1.6 billion
+- **Automotive Revenue**: Q4: $281 million, FY: $1.1 billion
+- **GAAP Earnings Per Share**: Q4: $4.93, FY: $11.93
+- **Non-GAAP Earnings Per Share**: Q4: $5.16, FY: $12.96
+- **Dividend**: $0.04 per share, payable on March 27, 2024
+- **Outlook for Q1 Fiscal 2025**: Revenue expected to be $24.0 billion
+- **Key Highlights**: Record quarterly and full-year revenues, significant growth in Data Center and Gaming segments, introduction of GeForce RTX 40 SUPER Series GPUs, expansion in AI and automotive sectors.
+- **Filing Purpose**: Current report filing for NVIDIA Corporation detailing financial results for Q4 and fiscal year 2024, including revenue breakdowns by segment, earnings per share, and future outlook.

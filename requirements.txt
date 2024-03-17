@@ -1,6 +1,6 @@
 pyautogen==0.2.18
-pytesseract==0.3.10
-unstructured==0.12.6
+pytesseract
+unstructured
 beautifulsoup4
 openai
 pandas
@@ -10,9 +10,8 @@ streamlit
 chromadb
 tiktoken
 pypdf
-langchain-community==0.0.27
-langchain-openai==0.0.8
-langchainhub==0.1.15
-langchain==0.1.11
-autogenstudio==0.0.53
-
+langchain-community
+langchain-openai
+langchainhub
+langchain
+autogenstudio

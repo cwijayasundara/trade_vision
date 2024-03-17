@@ -51,16 +51,17 @@ def research(query):
     researcher = autogen.AssistantAgent(
         name="researcher",
         system_message="Research about a given query, collect as many information as possible, and generate detailed "
-                       "research results with loads of technique details with all reference links attached; Add "
+                       "research results with loads of business details with all reference links attached; Add "
                        "TERMINATE to the end of the research report;",
         llm_config=llm_config_researcher,
     )
 
     user_proxy = autogen.UserProxyAgent(
         name="User_proxy",
-        code_execution_config={"last_n_messages": 2, "work_dir": "coding", "use_docker": False},
-        is_termination_msg=lambda x: x.get("content", "") and x.get(
-            "content", "").rstrip().endswith("TERMINATE"),
+        code_execution_config={"last_n_messages": 2,
+                               "work_dir": "coding",
+                               "use_docker": False},
+        is_termination_msg=lambda x: x.get("content", "") and x.get("content", "").rstrip().endswith("TERMINATE"),
         human_input_mode="NEVER",
         function_map={
             "search": search,
@@ -84,25 +85,26 @@ def research(query):
 def write_content(research_material, topic):
     editor = autogen.AssistantAgent(
         name="editor",
-        system_message="You are a senior editor of an AI blogger, you will define the structure of a short blog post "
+        system_message="You are a senior editor of a stock market analysis blogger, you will define the structure of "
+                       "a short blog post"
                        "based on material provided by the researcher, and give it to the writer to write the blog post",
         llm_config={"config_list": config_list},
     )
 
     writer = autogen.AssistantAgent(
         name="writer",
-        system_message="You are a professional AI blogger who is writing a blog post about AI, you will write a short "
-                       "blog post with no less than 1000 words, based on the structured provided by the editor, "
-                       "and feedback from reviewer; After 2"
-                       "rounds of content iteration, add TERMINATE to the end of the message",
+        system_message="You are a professional stock market analysis blogger who is writing a blog post about stock "
+                       "market, you will write a short blog post with no less than 1000 words, based on the "
+                       "structured provided by the editor, and feedback from reviewer; After 2 rounds of content "
+                       "iteration add TERMINATE to the end of the message",
         llm_config={"config_list": config_list},
     )
 
     reviewer = autogen.AssistantAgent(
         name="reviewer",
-        system_message="You are a world class hash tech blog content critic, you will review & critic the written "
-                       "blog and provide feedback to writer.After 2 rounds of content iteration, add TERMINATE to the "
-                       "end of the message",
+        system_message="You are a world class hash stock market review blog content critic, you will review & critic "
+                       "the written blog and provide feedback to writer.After 2 rounds of content iteration,"
+                       "add TERMINATE to the end of the message ",
         llm_config={"config_list": config_list},
     )
 
@@ -111,8 +113,7 @@ def write_content(research_material, topic):
         system_message="A human admin. Interact with editor to discuss the structure. Actual writing needs to be "
                        "approved by this admin.",
         code_execution_config=False,
-        is_termination_msg=lambda x: x.get("content", "") and x.get(
-            "content", "").rstrip().endswith("TERMINATE"),
+        is_termination_msg=lambda x: x.get("content", "") and x.get("content", "").rstrip().endswith("TERMINATE"),
         human_input_mode="NEVER",
     )
 
@@ -196,10 +197,10 @@ user_proxy = autogen.UserProxyAgent(
 
 
 def trigger_research_team(task):
-    chat_history = user_proxy.initiate_chat(
-        writing_assistant, message=task).chat_history
+    chat_history = user_proxy.initiate_chat(writing_assistant, message=task).chat_history
     return chat_history
 
 
 # test
-# print(trigger_research_team("Research on news articles about Bitcoin ?"))
+# print(trigger_research_team("Write a executive summery on using Generative AI for stock market analysis and "
+#                             "prediction."))

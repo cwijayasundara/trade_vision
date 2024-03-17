@@ -1,5 +1,5 @@
 import warnings
-from summeriser.summariser import summarizer
+from summeriser.summariser import summariser_point_form
 
 warnings.filterwarnings("ignore")
 
@@ -11,7 +11,7 @@ documents = {
 
 
 def summarise_8_k(document_path):
-    doc_summary = summarizer(document_path)
+    doc_summary = summariser_point_form(document_path)
     return doc_summary
 
 

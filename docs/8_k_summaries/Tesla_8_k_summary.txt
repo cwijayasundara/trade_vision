@@ -1,3 +1,24 @@
-Tesla, Inc. filed a Form 8-K report with the U.S. Securities and Exchange Commission on January 2, 2024, detailing its operations and financial condition. The report, originating from its headquarters in Austin, Texas, announced Tesla's vehicle production and delivery figures for the fourth quarter of 2023 and the entire year. In Q4, Tesla produced approximately 495,000 vehicles and delivered over 484,000, with Model 3/Y making up the majority of these figures. For the year 2023, Tesla saw a 38% year-over-year growth in vehicle deliveries, totaling 1.81 million, and a 35% increase in production, reaching 1.85 million vehicles. The company expressed gratitude to its customers, employees, suppliers, shareholders, and supporters for their contributions to a successful year.
-
-Tesla also announced that it would post its financial results for the fourth quarter of 2023 after the market closes on January 24, 2024. A live Q&A webcast with Tesla management to discuss the company's financial and business results and outlook is scheduled for the same day. The report emphasizes that Tesla vehicle deliveries are only one measure of the company's financial performance and should not be solely relied upon as an indicator of quarterly financial results, which are influenced by various factors including sales costs, foreign exchange movements, and the mix of directly leased vehicles.
+- **Report Type:** Form 8-K Current Report by Tesla, Inc. to the SEC.
+- **Date of Report:** January 2, 2024.
+- **Company Information:**
+  - **Name:** Tesla, Inc.
+  - **Location:** Austin, Texas.
+  - **IRS Identification No.:** 91-2197729.
+- **Securities Information:**
+  - **Common Stock Symbol:** TSLA.
+  - **Market:** The Nasdaq Global Select Market.
+- **Report Highlights:**
+  - Tesla announced Q4 2023 vehicle production and deliveries in a press release (Exhibit 99.1).
+  - **Q4 2023 Production and Deliveries:**
+    - Produced approximately 495,000 vehicles.
+    - Delivered over 484,000 vehicles.
+  - **2023 Annual Summary:**
+    - Vehicle deliveries grew 38% YoY to 1.81 million.
+    - Production grew 35% YoY to 1.85 million.
+  - **Financial Results Announcement:**
+    - Scheduled for after market close on January 24, 2024.
+    - Will include a live Q&A webcast at 4:30 p.m. Central Time.
+- **Contact for Investor Relations:** ir@tesla.com.
+- **Additional Notes:**
+  - Vehicle deliveries are presented as a measure of performance but not an exclusive indicator of financial results.
+  - Full financial performance details, including net income and cash flow, to be announced with Q4 and full-year 2023 earnings.
