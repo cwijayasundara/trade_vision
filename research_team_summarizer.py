@@ -1,9 +1,11 @@
 from dotenv import load_dotenv
 from langchain.chains.summarize import load_summarize_chain
-from langchain.chat_models import ChatOpenAI
+from langchain_openai import ChatOpenAI
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain_core.prompts import PromptTemplate
+import warnings
 
+warnings.filterwarnings("ignore")
 # Get API key
 load_dotenv()
 
@@ -31,10 +33,12 @@ def summary(content):
         verbose=True
     )
 
-    output = summary_chain.run(input_documents=docs, )
+    output = summary_chain.run(input_documents=docs)
 
     return output
 
 
+# from research_team_google_search import search
+#
 # text = search("What is ads/cft?")
 # print(summary(text['knowledgeGraph']['description']))
