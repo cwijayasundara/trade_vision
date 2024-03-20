@@ -42,7 +42,7 @@ with st.sidebar:
     add_radio = st.radio(
         "What do you want to help with today?",
         ("introduction", "chat-with-10-k", "stock-performance", "market-research", "stock-price-prediction",
-         "crew-ai-analysis")
+         "buy-sell-hold")
     )
 if add_radio == "introduction":
     tab1, tab2, tab3, tab4, tab5 = st.tabs(["company info", "income statement", "news", "recommendations",
@@ -149,8 +149,14 @@ elif add_radio == "stock-price-prediction":
     st.write("Please visit the following link to access the stock price prediction tool")
     st.write("http://localhost:8000/")
 
-elif add_radio == "crew-ai-analysis":
-    st.subheader("Crew AI Market Analysis")
+elif add_radio == "buy-sell-hold":
+    st.subheader(f"Crew AI Market Analysis: {option}")
     if option == "Tesla":
         analysis = read_file("docs/crew_ai/tesla_output.txt")
+        st.write(format_text(analysis))
+    elif option == "Alphabet":
+        analysis = read_file("docs/crew_ai/google_output.txt")
+        st.write(format_text(analysis))
+    elif option == "Nvidia":
+        analysis = read_file("docs/crew_ai/nvda_output.txt")
         st.write(format_text(analysis))

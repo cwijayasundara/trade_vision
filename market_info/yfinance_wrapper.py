@@ -20,6 +20,5 @@ def show_recommendations(ticker):
     stock = yf.Ticker(ticker)
     return stock.recommendations
 
-
 # recommendations = show_recommendations("TSLA")
 # print(recommendations)
