@@ -1,5 +1,7 @@
 import os
 import streamlit as st
+import pandas as pd
+import numpy as np
 
 from retriever import vector_db_reader
 from studio_app import execute_autogen_studio
@@ -45,23 +47,29 @@ with st.sidebar:
          "buy-sell-hold")
     )
 if add_radio == "introduction":
-    tab1, tab2, tab3, tab4, tab5 = st.tabs(["company info", "income statement", "news", "recommendations",
-                                            "about trade vision"])
+    tab1, tab2, tab3, tab4, tab5, tab6 = st.tabs(
+        ["company info", "historical stock prices ", "income statement", "news",
+         "recommendations", "about trade vision"])
+
     with tab1:
         stock_info = get_stock_info(ticker_map[option])
         for key, value in stock_info.items():
             st.write(f"{key}: {value}")
     with tab2:
+        chart_data = pd.DataFrame(np.random.randn(20, 1), columns=["a"])
+        st.line_chart(chart_data)
+
+    with tab3:
         income_statement = get_income_statement(ticker_map[option])
         for key, value in income_statement.items():
             st.write(f"{key}: {value}")
-    with tab3:
+    with tab4:
         news = show_news(ticker_map[option])
         st.write(news)
-    with tab4:
+    with tab5:
         recommendations = show_recommendations(ticker_map[option])
         st.write(recommendations)
-    with tab5:
+    with tab6:
         introduction = format_text(read_file("docs/intro/intro.txt"))
         st.write(introduction)
 
