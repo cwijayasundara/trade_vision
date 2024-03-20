@@ -6,6 +6,7 @@ from studio_app import execute_autogen_studio
 from research_team import trigger_research_team
 from util.file_util import read_file
 from summeriser.formatter import format_text
+from market_info.yfinance_wrapper import get_stock_info, get_income_statement, show_news, show_recommendations
 
 k_8_summeries = {
     'Tesla': 'docs/8_k_summaries/Tesla_8_k_summary.txt',
@@ -13,25 +14,58 @@ k_8_summeries = {
     'Alphabet': 'docs/8_k_summaries/Alphabet_8_k_summary.txt'
 }
 
+ticker_map = {
+    'Tesla': 'TSLA',
+    'Nvidia': 'NVDA',
+    'Alphabet': 'GOOGL'
+}
+
 os.environ['LANGCHAIN_TRACING_V2'] = 'true'
 os.environ['LANGCHAIN_ENDPOINT'] = 'https://api.smith.langchain.com'
 st.title("Trade Vision : Trading Reimagined !")
 options = ["Tesla", "Alphabet", "Nvidia"]
 
+st.markdown(
+    """
+    <style>
+        section[data-testid="stSidebar"] {
+            width: 400px !important; # Set the width to your desired value
+        }
+    </style>
+    """,
+    unsafe_allow_html=True,
+)
+
 with st.sidebar:
+    st.image("images/trade_vision_2.webp")
     option = st.selectbox('Select Company ?', options)
     add_radio = st.radio(
         "What do you want to help with today?",
-        ("introduction", "chat-with-10-k", "stock-performance", "market-research", "stock-price-prediction")
+        ("introduction", "chat-with-10-k", "stock-performance", "market-research", "stock-price-prediction",
+         "crew-ai-analysis")
     )
 if add_radio == "introduction":
-    introduction = format_text(read_file("docs/intro/intro.txt"))
-    st.write(introduction)
+    tab1, tab2, tab3, tab4, tab5 = st.tabs(["company info", "income statement", "news", "recommendations",
+                                            "about trade vision"])
+    with tab1:
+        stock_info = get_stock_info(ticker_map[option])
+        for key, value in stock_info.items():
+            st.write(f"{key}: {value}")
+    with tab2:
+        income_statement = get_income_statement(ticker_map[option])
+        for key, value in income_statement.items():
+            st.write(f"{key}: {value}")
+    with tab3:
+        news = show_news(ticker_map[option])
+        st.write(news)
+    with tab4:
+        recommendations = show_recommendations(ticker_map[option])
+        st.write(recommendations)
+    with tab5:
+        introduction = format_text(read_file("docs/intro/intro.txt"))
+        st.write(introduction)
 
 elif add_radio == "chat-with-10-k":
-    st.image("images/trade_vision_2.webp", width=200, caption="Trade Vision : Trading Reimagined !",
-             use_column_width=False)
-
     st.markdown(''' :orange[2024 8K File Summery]''', unsafe_allow_html=True)
     k_8_summary = format_text(read_file(k_8_summeries[option]))
     st.write(k_8_summary)
@@ -45,30 +79,34 @@ elif add_radio == "chat-with-10-k":
                   f"Discussion and Analysis (MD&A) section?")
     question_5 = f"What are {option} current debt levels, and how do they compare to its assets and equity?"
 
-    result_1 = vector_db_reader(question_1)
-    result_1_formatted = format_text(result_1)
-    st.markdown(''' :blue[Revenue Trend]''', unsafe_allow_html=True)
-    st.write(result_1_formatted)
+    col1, col2 = st.columns(2)
 
-    result_2 = vector_db_reader(question_2)
-    result_2_formatted = format_text(result_2)
-    st.markdown(''' :blue[Income and Margin Trends]''', unsafe_allow_html=True)
-    st.write(result_2_formatted)
+    with col1:
+        result_1 = vector_db_reader(question_1)
+        result_1_formatted = format_text(result_1)
+        st.markdown(''' :blue[Revenue Trend]''', unsafe_allow_html=True)
+        st.write(result_1_formatted)
 
-    result_3 = vector_db_reader(question_3)
-    result_3_formatted = format_text(result_3)
-    st.markdown(''' :blue[Risk Factors]''', unsafe_allow_html=True)
-    st.write(result_3_formatted)
+        result_2 = vector_db_reader(question_2)
+        result_2_formatted = format_text(result_2)
+        st.markdown(''' :blue[Income and Margin Trends]''', unsafe_allow_html=True)
+        st.write(result_2_formatted)
 
-    result_4 = vector_db_reader(question_4)
-    result_4_formatted = format_text(result_4)
-    st.markdown(''' :blue[Competitive Position and Market Opportunities]''', unsafe_allow_html=True)
-    st.write(result_4_formatted)
+        result_3 = vector_db_reader(question_3)
+        result_3_formatted = format_text(result_3)
+        st.markdown(''' :blue[Risk Factors]''', unsafe_allow_html=True)
+        st.write(result_3_formatted)
 
-    result_5 = vector_db_reader(question_5)
-    result_5_formatted = format_text(result_5)
-    st.markdown(''' :blue[Current Debt Levels]''', unsafe_allow_html=True)
-    st.write(result_5_formatted)
+    with col2:
+        result_4 = vector_db_reader(question_4)
+        result_4_formatted = format_text(result_4)
+        st.markdown(''' :blue[Competitive Position and Market Opportunities]''', unsafe_allow_html=True)
+        st.write(result_4_formatted)
+
+        result_5 = vector_db_reader(question_5)
+        result_5_formatted = format_text(result_5)
+        st.markdown(''' :blue[Current Debt Levels]''', unsafe_allow_html=True)
+        st.write(result_5_formatted)
 
     st.markdown(''' :red[Chat with the 10K File !]''', unsafe_allow_html=True)
     request = st.text_area(f"How can I help you with {option} 10-K File 2023 Today?", height=100)
@@ -107,6 +145,12 @@ elif add_radio == "market-research":
             st.write(chat_result)
 
 elif add_radio == "stock-price-prediction":
+    st.image("images/task_weaver.png", use_column_width=True)
     st.write("Please visit the following link to access the stock price prediction tool")
     st.write("http://localhost:8000/")
-    st.write("Thank you for your patience !")
+
+elif add_radio == "crew-ai-analysis":
+    st.subheader("Crew AI Market Analysis")
+    if option == "Tesla":
+        analysis = read_file("docs/crew_ai/tesla_output.txt")
+        st.write(format_text(analysis))
