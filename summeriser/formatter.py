@@ -2,18 +2,18 @@ from dotenv import load_dotenv
 from langchain.chains import LLMChain
 from langchain_core.prompts import PromptTemplate
 from langchain_openai import ChatOpenAI
-from langchain_community.llms import Ollama
+# from langchain_community.llms import Ollama
 
 load_dotenv()
 
-# llm = ChatOpenAI(temperature=0,
-#                  model_name="gpt-4-0125-preview")
+llm = ChatOpenAI(temperature=0,
+                 model_name="gpt-4-0125-preview")
 
-llm = Ollama(model="mixtral:instruct", temperature=0)
+# llm = Ollama(model="mixtral:instruct", temperature=0)
 
 template = """
 
-You are an expert in text formatting.
+System : You are an expert in text formatting to produce executive summaries.
 
 Format the provided text {text} in a way that it is easy to read and understand in point form.
 
