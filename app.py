@@ -9,8 +9,7 @@ from research_team import trigger_research_team
 from util.file_util import read_file
 from summeriser.formatter import format_text
 
-from market_info.yfinance_wrapper import (get_stock_info, get_income_statement, show_news, extract_future_outlook
-                                          )
+from market_info.yfinance_wrapper import (get_stock_info, get_income_statement, show_news, extract_future_outlook)
 
 k_8_summeries = {
     'Tesla': 'docs/k_8_sum/tesla_8_k_summary.txt',
@@ -45,16 +44,26 @@ with st.sidebar:
     option = st.selectbox('Select Company ?', options)
     add_radio = st.radio(
         "What do you want to help with today?",
-        ("introduction", "highlights-from-10-k", "chat-with-10-k", "stock-performance", "market-research",
-         "stock-price-prediction", "buy-sell-hold", "about trade vision")
+        ("stock highlights !", "highlights-from-knowledge-base", "chat-with-knowledge-base",
+         "stock-performance: autogen",
+         "market-research: autogen", "stock-price-prediction: taskweaver", "buy-sell-hold: crewai", "about trade vision")
     )
 
-if add_radio == "introduction":
-    tab1, tab2, tab3, tab4, tab5, tab6 = st.tabs(
+if add_radio == "stock highlights !":
+    tab1, tab2, tab3, tab4, tab5 = st.tabs(
         ["company info", "historical stock prices ", "income statement", "news",
-         "future outlook", "about trade vision"])
+         "future outlook"])
 
     with tab1:
+        if option == "Tesla":
+            st.write("Nasdaq: TSLA")
+            st.image("images/tsla_pred.png", use_column_width=True)
+        elif option == "Nvidia":
+            st.write("Nasdaq: NVDA")
+            st.image("images/nvda_pred.png", use_column_width=True)
+        elif option == "Alphabet":
+            st.write("Nasdaq: GOOGL")
+            st.image("images/googl_pred.png", use_column_width=True)
         stock_info = get_stock_info(ticker_map[option])
         st.write(stock_info)
     with tab2:
@@ -71,13 +80,10 @@ if add_radio == "introduction":
     with tab5:
         recommendations = extract_future_outlook(ticker_map[option])
         st.write(recommendations)
-    with tab6:
-        introduction = format_text(read_file("docs/intro/intro.txt"))
-        st.write(introduction)
 
-elif add_radio == "highlights-from-10-k":
+elif add_radio == "highlights-from-knowledge-base":
 
-    st.markdown(''' :orange[2024 8K File Summery]''', unsafe_allow_html=True)
+    st.markdown(''' :orange[Knowledge Base : Summary]''', unsafe_allow_html=True)
     k_8_summary = format_text(read_file(k_8_summeries[option]))
     st.write(k_8_summary)
 
@@ -119,16 +125,17 @@ elif add_radio == "highlights-from-10-k":
     st.markdown(''' :blue[Current Debt Levels]''', unsafe_allow_html=True)
     st.write(result_5_formatted)
 
-elif add_radio == "chat-with-10-k":
-    st.markdown(''' :red[Chat with the 10K File !]''', unsafe_allow_html=True)
-    request = st.text_area(f"How can I help you with {option} 10-K File 2023 Today?", height=100)
+elif add_radio == "chat-with-knowledge-base":
+    st.markdown(''' :blue[Chat with the Knowledge Base !]''', unsafe_allow_html=True)
+    st.image("images/rag.webp", width=400)
+    request = st.text_area(f"How can I help you with {option} knowledge base today?", height=100)
     submit = st.button("submit", type="primary")
     if request and submit:
         chat_result = vector_db_reader(request)
-        st.write(chat_result)
+        st.write(format_text(chat_result))
 
-# to fix
-elif add_radio == "stock-performance":
+elif add_radio == "stock-performance: autogen":
+    st.image("images/autogen_2.png", use_column_width=True)
     stock_queries = [f"",
                      f"Plot a chart of to show {option} stock price movement for the past 5 years? Execute the "
                      f"generated code and save the result to a file named {option}_stock_prices_for_5_years.png",
@@ -136,32 +143,52 @@ elif add_radio == "stock-performance":
                      f"code and Save the result to a file named {option}_stock_prices_for_last_week.png",
                      f"Plot a chart of NVDA and TESLA stock price YTD. Execute the code and save the result to a file "
                      f"named nvda_tesla.png"]
-    stock_query = st.selectbox(f'Select {option} stock query ?', stock_queries)
-    if stock_query:
-        submit = st.button("submit", type="primary")
-        if submit:
-            chat_result = execute_autogen_studio(stock_query)
-            st.write(chat_result)
 
-#  to fix (to show the output in the page)
-elif add_radio == "market-research":
+    manual_mode = st.checkbox("manual mode")
+    if manual_mode:
+        stock_query_manual = st.text_input("How can I help you today?")
+        st.write("E.g. Plot a graph to compare the stock price movement of the top 10 tech companies for the past 5 "
+                 "years?")
+        submit = st.button("submit", type="primary")
+        if stock_query_manual and submit:
+            chat_result = execute_autogen_studio(stock_query_manual)
+            st.write(chat_result)
+    else:
+        stock_query = st.selectbox(f'Select {option} stock query ?', stock_queries)
+        if stock_query:
+            submit = st.button("submit", type="primary")
+            if submit:
+                chat_result = execute_autogen_studio(stock_query)
+                st.write(chat_result)
+
+elif add_radio == "market-research: autogen":
+    st.image("images/autogen_2.png", use_column_width=True)
     research_queries = [f"Research on news articles about {option} focusing on stock price performance?",
                         f"Research on market research reports {option} stock price predictions for 2024?",
                         f"Write a research report for an investor advising if {option} stock is a buy, sell or hold "
                         f"in 2024?"]
-    research_query = st.selectbox(f'Select {option} research query ?', research_queries)
-    if research_query:
+    manual_mode = st.checkbox("manual mode")
+    if manual_mode:
+        research_query_manual = st.text_input("How can I help you today?")
+        st.write("E.g. Research on news articles about Tesla focusing on stock price performance?")
         submit = st.button("submit", type="primary")
-        if submit:
+        if research_query_manual and submit:
+            chat_result = trigger_research_team(research_query_manual)
+            st.write(chat_result)
+    else:
+        research_query = st.selectbox(f'Select {option} research query ?', research_queries)
+        submit = st.button("submit", type="primary")
+        if research_query and submit:
             chat_result = trigger_research_team(research_query)
             st.write(chat_result)
 
-elif add_radio == "stock-price-prediction":
-    st.image("images/task_weaver.png", use_column_width=True)
+elif add_radio == "stock-price-prediction: taskweaver":
+    st.image("images/task_weaver_2.png", use_column_width=True)
     st.write("Please visit the following link to access the stock price prediction tool")
     st.write("http://localhost:8000/")
 
-elif add_radio == "buy-sell-hold":
+elif add_radio == "buy-sell-hold: crewai":
+    st.image("images/crew_ai.png", use_column_width=True)
     st.subheader(f"Crew AI Market Analysis: {option}")
     if option == "Tesla":
         analysis = read_file("docs/crew_ai/tesla_output.txt")
@@ -179,3 +206,11 @@ elif add_radio == "about trade vision":
              "actionable insights and recommendations. Whether you are a seasoned investor or new to the stock market, "
              "Trade Vision can help you navigate the complexities of the financial markets and make better investment "
              "decisions.")
+    tab1, tab2 = st.tabs(
+        ["using gen ai for stock market analysis", "design"])
+    with tab1:
+        introduction = format_text(read_file("docs/intro/intro.txt"))
+        st.write(introduction)
+    with tab2:
+        st.write("under construction !")
+

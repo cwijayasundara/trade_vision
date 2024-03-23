@@ -48,16 +48,10 @@ def show_news(ticker):
         summary = item.get('summary')
         link = item.get('link')
         publisher = item.get('publisher')
-        date = item.get('providerPublishTime')  # This might be in epoch format
-
-        # Convert epoch to readable date, if necessary
-        # Assuming 'date' is epoch, uncomment and adjust the following line if needed
+        date = item.get('providerPublishTime')
         date = datetime.datetime.fromtimestamp(date).strftime('%Y-%m-%d %H:%M:%S')
-
         formatted_news.append(
             f"Title: {title}\nSummary: {summary}\nPublisher: {publisher}\nDate: {date}\nLink: {link}\n")
-
-    # Join all news items into a single string for display
     return "\n".join(formatted_news)
 
 
@@ -69,8 +63,6 @@ def show_recommendations(ticker):
 def extract_future_outlook(ticker_symbol):
     ticker = yf.Ticker(ticker_symbol)
     info = ticker.info
-
-    # Extract key future outlook metrics
     future_outlook = {
         'Earnings Growth': info.get('earningsGrowth', 'N/A'),
         'Forward P/E': info.get('forwardPE', 'N/A'),
