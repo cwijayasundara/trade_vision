@@ -50,6 +50,8 @@ with st.sidebar:
     )
 
 if add_radio == "stock highlights !":
+    st.markdown(''' :orange[For stock analysis pls follow the below link !]''', unsafe_allow_html=True)
+    st.write("http://localhost:8501/")
     tab1, tab2, tab3, tab4, tab5 = st.tabs(
         ["company info", "historical stock prices ", "income statement", "news",
          "future outlook"])
