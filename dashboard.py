@@ -37,9 +37,9 @@ def main():
     # get current date data for searched ticker
     stock_lastprice = stock_data.history(period='1d', start=today, end=today)
     # get current date closing price for searched ticker
-    last_price = (stock_lastprice.Close)
+    last_price = stock_lastprice.Close
     # if market is closed on current date print that there is no data available
-    if last_price.empty == True:
+    if last_price.empty:
         st.write("No data available at the moment")
     else:
         st.write(last_price)
@@ -54,8 +54,8 @@ def main():
     actions = st.sidebar.checkbox("Stock Actions")
     if actions:
         st.subheader("""Stock **actions** for """ + selected_stock)
-        display_action = (stock_data.actions)
-        if display_action.empty == True:
+        display_action = stock_data.actions
+        if display_action.empty:
             st.write("No data available at the moment")
         else:
             st.write(display_action)
@@ -64,8 +64,8 @@ def main():
     financials = st.sidebar.checkbox("Quarterly Financials")
     if financials:
         st.subheader("""**Quarterly financials** for """ + selected_stock)
-        display_financials = (stock_data.quarterly_financials)
-        if display_financials.empty == True:
+        display_financials = stock_data.quarterly_financials
+        if display_financials.empty:
             st.write("No data available at the moment")
         else:
             st.write(display_financials)
@@ -74,8 +74,8 @@ def main():
     major_shareholders = st.sidebar.checkbox("Institutional Shareholders")
     if major_shareholders:
         st.subheader("""**Institutional investors** for """ + selected_stock)
-        display_shareholders = (stock_data.institutional_holders)
-        if display_shareholders.empty == True:
+        display_shareholders = stock_data.institutional_holders
+        if display_shareholders.empty:
             st.write("No data available at the moment")
         else:
             st.write(display_shareholders)
@@ -84,8 +84,8 @@ def main():
     balance_sheet = st.sidebar.checkbox("Quarterly Balance Sheet")
     if balance_sheet:
         st.subheader("""**Quarterly balance sheet** for """ + selected_stock)
-        display_balancesheet = (stock_data.quarterly_balance_sheet)
-        if display_balancesheet.empty == True:
+        display_balancesheet = stock_data.quarterly_balance_sheet
+        if display_balancesheet.empty:
             st.write("No data available at the moment")
         else:
             st.write(display_balancesheet)
@@ -94,8 +94,8 @@ def main():
     cashflow = st.sidebar.checkbox("Quarterly Cashflow")
     if cashflow:
         st.subheader("""**Quarterly cashflow** for """ + selected_stock)
-        display_cashflow = (stock_data.quarterly_cashflow)
-        if display_cashflow.empty == True:
+        display_cashflow = stock_data.quarterly_cashflow
+        if display_cashflow.empty:
             st.write("No data available at the moment")
         else:
             st.write(display_cashflow)
@@ -104,8 +104,8 @@ def main():
     earnings = st.sidebar.checkbox("Quarterly Earnings")
     if earnings:
         st.subheader("""**Quarterly earnings** for """ + selected_stock)
-        display_earnings = (stock_data.quarterly_earnings)
-        if display_earnings.empty == True:
+        display_earnings = stock_data.quarterly_earnings
+        if display_earnings.empty:
             st.write("No data available at the moment")
         else:
             st.write(display_earnings)
@@ -114,8 +114,8 @@ def main():
     analyst_recommendation = st.sidebar.checkbox("Analysts Recommendation")
     if analyst_recommendation:
         st.subheader("""**Analysts recommendation** for """ + selected_stock)
-        display_analyst_rec = (stock_data.recommendations)
-        if display_analyst_rec.empty == True:
+        display_analyst_rec = stock_data.recommendations
+        if display_analyst_rec.empty:
             st.write("No data available at the moment")
         else:
             st.write(display_analyst_rec)

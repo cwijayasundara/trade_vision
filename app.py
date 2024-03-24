@@ -1,7 +1,7 @@
 import os
 import streamlit as st
-import pandas as pd
-import numpy as np
+import yfinance as yf
+from datetime import datetime
 
 from retriever import vector_db_reader
 from studio_app import execute_autogen_studio
@@ -46,42 +46,103 @@ with st.sidebar:
         "What do you want to help with today?",
         ("stock highlights !", "highlights-from-knowledge-base", "chat-with-knowledge-base",
          "stock-performance: autogen",
-         "market-research: autogen", "stock-price-prediction: taskweaver", "buy-sell-hold: crewai", "about trade vision")
+         "market-research: autogen", "stock-price-prediction: taskweaver", "buy-sell-hold: crewai",
+         "about trade vision")
     )
 
 if add_radio == "stock highlights !":
-    st.markdown(''' :orange[For stock analysis pls follow the below link !]''', unsafe_allow_html=True)
-    st.write("http://localhost:8501/")
+
     tab1, tab2, tab3, tab4, tab5 = st.tabs(
-        ["company info", "historical stock prices ", "income statement", "news",
+        ["company info", "stock prices ", "financials", "news",
          "future outlook"])
 
+    selected_stock = ticker_map[option]
+    stock_data = yf.Ticker(selected_stock)
+
     with tab1:
+        st.subheader("""Nasdaq price prediction for """ + selected_stock)
         if option == "Tesla":
-            st.write("Nasdaq: TSLA")
             st.image("images/tsla_pred.png", use_column_width=True)
         elif option == "Nvidia":
-            st.write("Nasdaq: NVDA")
             st.image("images/nvda_pred.png", use_column_width=True)
         elif option == "Alphabet":
-            st.write("Nasdaq: GOOGL")
             st.image("images/googl_pred.png", use_column_width=True)
+
         stock_info = get_stock_info(ticker_map[option])
         st.write(stock_info)
+
     with tab2:
-        chart_data = pd.DataFrame(np.random.randn(20, 1), columns=["a"])
-        st.line_chart(chart_data)
+        st.subheader("""Daily **closing price** for """ + selected_stock)
+        stock_df = stock_data.history(period='1d', start='2020-01-01', end=None)
+        st.line_chart(stock_df.Close)
+
+        st.subheader("""Last **closing price** for """ + selected_stock)
+        today = datetime.today().strftime('%Y-%m-%d')
+        stock_lastprice = stock_data.history(period='1d', start=today, end=today)
+        last_price = stock_lastprice.Close
+        if last_price.empty:
+            st.write("No data available at the moment")
+        else:
+            st.write(last_price)
+
+        st.subheader("""Daily **volume** for """ + selected_stock)
+        st.line_chart(stock_df.Volume)
+
+        st.subheader("""Stock **actions** for """ + selected_stock)
+        display_action = stock_data.actions
+        if display_action.empty:
+            st.write("No data available at the moment")
+        else:
+            st.write(display_action)
 
     with tab3:
+        st.subheader("""**Income Statement** for """ + selected_stock)
         income_statement = get_income_statement(ticker_map[option])
         st.write(income_statement)
 
+        st.subheader("""**Quarterly financials** for """ + selected_stock)
+        display_financials = stock_data.quarterly_financials
+        if display_financials.empty:
+            st.write("No data available at the moment")
+        else:
+            st.write(display_financials)
+
+        st.subheader("""**Institutional investors** for """ + selected_stock)
+        display_shareholders = stock_data.institutional_holders
+        if display_shareholders.empty:
+            st.write("No data available at the moment")
+        else:
+            st.write(display_shareholders)
+
+        st.subheader("""**Quarterly balance sheet** for """ + selected_stock)
+        display_balancesheet = stock_data.quarterly_balance_sheet
+        if display_balancesheet.empty:
+            st.write("No data available at the moment")
+        else:
+            st.write(display_balancesheet)
+
+        st.subheader("""**Quarterly cashflow** for """ + selected_stock)
+        display_cashflow = stock_data.quarterly_cashflow
+        if display_cashflow.empty:
+            st.write("No data available at the moment")
+        else:
+            st.write(display_cashflow)
+
     with tab4:
+        st.subheader("""Latest news for """ + selected_stock)
         news = show_news(ticker_map[option])
         st.write(news)
     with tab5:
+        st.subheader("""Future outlook for """ + selected_stock)
         recommendations = extract_future_outlook(ticker_map[option])
         st.write(recommendations)
+
+        st.subheader("""**Analysts recommendation** for """ + selected_stock)
+        display_analyst_rec = stock_data.recommendations
+        if display_analyst_rec.empty:
+            st.write("No data available at the moment")
+        else:
+            st.write(display_analyst_rec)
 
 elif add_radio == "highlights-from-knowledge-base":
 
@@ -215,4 +276,14 @@ elif add_radio == "about trade vision":
         st.write(introduction)
     with tab2:
         st.write("under construction !")
+        col1, col2 = st.columns(2)
+        with col1:
+            st.write("stock highlights")
+            st.write("highlights-from-knowledge-base")
+            st.write("chat-with-knowledge-base")
+            st.write("stock-performance: autogen")
+        with col2:
+            st.write("market-research: autogen")
+            st.write("stock-price-prediction: taskweaver")
+            st.write("buy-sell-hold: crewai")
 
