@@ -8,8 +8,10 @@ from studio_app import execute_autogen_studio
 from research_team import trigger_research_team
 from util.file_util import read_file
 from summeriser.formatter import format_text
-
-from market_info.yfinance_wrapper import (get_stock_info, get_income_statement, show_news, extract_future_outlook)
+from news_analysis.news_analysis import get_news_for_ticker, analyse_sentiment_df
+from finance_analyser.finance_analyser import get_finantial_insights
+from market_info.yfinance_wrapper import (get_stock_info, get_income_statement, extract_future_outlook)
+from risk_simulation import construct_simulation
 
 k_8_summeries = {
     'Tesla': 'docs/k_8_sum/tesla_8_k_summary.txt',
@@ -44,17 +46,23 @@ with st.sidebar:
     option = st.selectbox('Select Company ?', options)
     add_radio = st.radio(
         "What do you want to help with today?",
-        ("stock highlights !", "highlights-from-knowledge-base", "chat-with-knowledge-base",
+        ("stock highlights !",
+         "highlights-from-knowledge-base",
+         "chat-with-knowledge-base",
          "stock-performance: autogen",
-         "market-research: autogen", "stock-price-prediction: taskweaver", "buy-sell-hold: crewai",
+         "market-research: autogen",
+         "tools: stock investigations",
+         "tools: stock predictions",
+         "tools: monte carlo simulation",
+         "tools: stock analyst",
+         "final report"
          "about trade vision")
     )
 
 if add_radio == "stock highlights !":
 
     tab1, tab2, tab3, tab4, tab5 = st.tabs(
-        ["company info", "stock prices ", "financials", "news",
-         "future outlook"])
+        ["company info", "stock prices ", "financials", "news", "future outlook"])
 
     selected_stock = ticker_map[option]
     stock_data = yf.Ticker(selected_stock)
@@ -72,66 +80,97 @@ if add_radio == "stock highlights !":
         st.write(stock_info)
 
     with tab2:
-        st.subheader("""Daily **closing price** for """ + selected_stock)
-        stock_df = stock_data.history(period='1d', start='2020-01-01', end=None)
-        st.line_chart(stock_df.Close)
 
-        st.subheader("""Last **closing price** for """ + selected_stock)
-        today = datetime.today().strftime('%Y-%m-%d')
-        stock_lastprice = stock_data.history(period='1d', start=today, end=today)
-        last_price = stock_lastprice.Close
-        if last_price.empty:
-            st.write("No data available at the moment")
-        else:
-            st.write(last_price)
+        tab15, tab16, tab17 = st.tabs(["daily closing price", "today's closing price", "stock actions"])
 
-        st.subheader("""Daily **volume** for """ + selected_stock)
-        st.line_chart(stock_df.Volume)
+        with tab15:
+            st.subheader("""Daily **closing price** for """ + selected_stock)
+            stock_df = stock_data.history(period='1d', start='2020-01-01',
+                                          end=None)
+            st.line_chart(stock_df.Close)
+            daily_stock_analysis = get_finantial_insights(stock_df.Close)
+            st.write(daily_stock_analysis)
 
-        st.subheader("""Stock **actions** for """ + selected_stock)
-        display_action = stock_data.actions
-        if display_action.empty:
-            st.write("No data available at the moment")
-        else:
-            st.write(display_action)
+        with tab16:
+
+            st.subheader("""Last **closing price** for """ + selected_stock)
+            today = datetime.today().strftime('%Y-%m-%d')
+            stock_lastprice = stock_data.history(period='1d', start=today, end=today)
+            last_price = stock_lastprice.Close
+            if last_price.empty:
+                st.write("No data available at the moment")
+            else:
+                st.write(last_price)
+                last_price_analysis = get_finantial_insights(last_price)
+                st.write(last_price_analysis)
+        with tab17:
+
+            st.subheader("""Stock **actions** for """ + selected_stock)
+            display_action = stock_data.actions
+            if display_action.empty:
+                st.write("No data available at the moment")
+            else:
+                st.write(display_action)
+                action_analysis = get_finantial_insights(display_action)
+                st.write(action_analysis)
 
     with tab3:
-        st.subheader("""**Income Statement** for """ + selected_stock)
-        income_statement = get_income_statement(ticker_map[option])
-        st.write(income_statement)
 
-        st.subheader("""**Quarterly financials** for """ + selected_stock)
-        display_financials = stock_data.quarterly_financials
-        if display_financials.empty:
-            st.write("No data available at the moment")
-        else:
-            st.write(display_financials)
+        tab10, tab11, tab12, tab13, tab14 = st.tabs(
+            ["income statement", "quarterly financials", "institutional investors",
+             "quarterly balance sheet", "quarterly cashflow"])
 
-        st.subheader("""**Institutional investors** for """ + selected_stock)
-        display_shareholders = stock_data.institutional_holders
-        if display_shareholders.empty:
-            st.write("No data available at the moment")
-        else:
-            st.write(display_shareholders)
+        with tab10:
+            st.subheader("""**Income Statement** for """ + selected_stock)
+            income_statement = get_income_statement(ticker_map[option])
+            st.write(income_statement)
 
-        st.subheader("""**Quarterly balance sheet** for """ + selected_stock)
-        display_balancesheet = stock_data.quarterly_balance_sheet
-        if display_balancesheet.empty:
-            st.write("No data available at the moment")
-        else:
-            st.write(display_balancesheet)
-
-        st.subheader("""**Quarterly cashflow** for """ + selected_stock)
-        display_cashflow = stock_data.quarterly_cashflow
-        if display_cashflow.empty:
-            st.write("No data available at the moment")
-        else:
-            st.write(display_cashflow)
+            income_stmt_analysis = get_finantial_insights(income_statement)
+            st.write(income_stmt_analysis)
+        with tab11:
+            st.subheader("""**Quarterly financials** for """ + selected_stock)
+            display_financials = stock_data.quarterly_financials
+            if display_financials.empty:
+                st.write("No data available at the moment")
+            else:
+                st.write(display_financials)
+                finantials_analysis = get_finantial_insights(display_financials)
+                st.write(finantials_analysis)
+        with tab12:
+            st.subheader("""**Institutional investors** for """ + selected_stock)
+            display_shareholders = stock_data.institutional_holders
+            if display_shareholders.empty:
+                st.write("No data available at the moment")
+            else:
+                st.write(display_shareholders)
+                institutional_analysis = get_finantial_insights(display_shareholders)
+                st.write(institutional_analysis)
+        with tab13:
+            st.subheader("""**Quarterly balance sheet** for """ + selected_stock)
+            display_balancesheet = stock_data.quarterly_balance_sheet
+            if display_balancesheet.empty:
+                st.write("No data available at the moment")
+            else:
+                st.write(display_balancesheet)
+                quarterly_balance_analysis = get_finantial_insights(display_balancesheet)
+                st.write(quarterly_balance_analysis)
+        with tab14:
+            st.subheader("""**Quarterly cashflow** for """ + selected_stock)
+            display_cashflow = stock_data.quarterly_cashflow
+            if display_cashflow.empty:
+                st.write("No data available at the moment")
+            else:
+                st.write(display_cashflow)
+                cashflow_analysis = get_finantial_insights(display_cashflow)
+                st.write(cashflow_analysis)
 
     with tab4:
-        st.subheader("""Latest news for """ + selected_stock)
-        news = show_news(ticker_map[option])
+        st.subheader("""Latest news for """ + selected_stock + " from www.finviz.com")
+        news = get_news_for_ticker(ticker_map[option])
         st.write(news)
+        sentiment = analyse_sentiment_df(news)
+        st.subheader(sentiment)
+
     with tab5:
         st.subheader("""Future outlook for """ + selected_stock)
         recommendations = extract_future_outlook(ticker_map[option])
@@ -245,12 +284,38 @@ elif add_radio == "market-research: autogen":
             chat_result = trigger_research_team(research_query)
             st.write(chat_result)
 
-elif add_radio == "stock-price-prediction: taskweaver":
+elif add_radio == "tools: stock investigations":
+    st.image("images/autogen_studio.png", use_column_width=True)
+    st.write("Please visit the following links to access the stock investigation tool")
+    st.write("http://localhost:8001/")
+
+
+elif add_radio == "tools: stock predictions":
     st.image("images/task_weaver_2.png", use_column_width=True)
     st.write("Please visit the following link to access the stock price prediction tool")
     st.write("http://localhost:8000/")
 
-elif add_radio == "buy-sell-hold: crewai":
+elif add_radio == "tools: monte carlo simulation":
+    initial_investment = st.text_input("Enter the initial investment amount :", 10000)
+    num_simulations = st.text_input("Enter the number of simulations :", 1000)
+    forecast_days = st.text_input("Enter the forecast days :", 365)
+    desired_return = st.text_input("Enter the desired return :", 0.10)
+    submit = st.button("submit", type="primary")
+    if submit:
+        var, conditional_var, probability_of_success = construct_simulation(ticker_map[option], int(initial_investment),
+                                                                            int(num_simulations), int(forecast_days),
+                                                                            float(desired_return))
+
+        st.write(f"Value at Risk (95% confidence): £{var:,.2f}")
+        st.write(f"Expected Tail Loss (Conditional VaR): £{conditional_var:,.2f}")
+
+        desired_return_percent = desired_return * 100
+        probability_of_success_percent = probability_of_success * 100
+        st.write(
+            f"Probability of achieving at least a {desired_return * 100}% return: {probability_of_success * 100:.2f}%")
+        st.image('risk_simulation.png', use_column_width=True)
+
+elif add_radio == "tools: stock analyst":
     st.image("images/crew_ai.png", use_column_width=True)
     st.subheader(f"Crew AI Market Analysis: {option}")
     if option == "Tesla":
@@ -262,6 +327,12 @@ elif add_radio == "buy-sell-hold: crewai":
     elif option == "Nvidia":
         analysis = read_file("docs/crew_ai/nvda_output.txt")
         st.write(format_text(analysis))
+    st.markdown("To access the stock analyst tool , please visit the following link: [Stock Analyst :Crew AI]("
+                "http://localhost:8003/)")
+
+elif add_radio == "final report":
+    st.write("Under construction !")
+
 elif add_radio == "about trade vision":
     st.write("Trade Vision is a tool that provides insights into stock market data, financial reports, and market "
              "research. It is designed to help investors make informed decisions about their investments. Trade Vision "
@@ -285,5 +356,4 @@ elif add_radio == "about trade vision":
         with col2:
             st.write("market-research: autogen")
             st.write("stock-price-prediction: taskweaver")
-            st.write("buy-sell-hold: crewai")
-
+            st.write("buy-sell-hold: market_crew")

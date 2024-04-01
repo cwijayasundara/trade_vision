@@ -2,13 +2,11 @@ from dotenv import load_dotenv
 from langchain.chains import load_summarize_chain, LLMChain, StuffDocumentsChain
 from langchain_community.document_loaders import PyPDFLoader
 from langchain_core.prompts import PromptTemplate
-# from langchain_openai import ChatOpenAI
-
-from langchain_community.llms import Ollama
+from langchain_openai import ChatOpenAI
 
 load_dotenv()
 
-llm = Ollama(model="mixtral:instruct", temperature=0)
+llm = ChatOpenAI(temperature=0, model_name="gpt-3.5-turbo-0125")
 
 # llm = ChatOpenAI(temperature=0, model_name="gpt-4-0125-preview")
 

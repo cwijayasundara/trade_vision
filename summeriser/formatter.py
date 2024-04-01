@@ -1,15 +1,12 @@
 from dotenv import load_dotenv
 from langchain.chains import LLMChain
 from langchain_core.prompts import PromptTemplate
-# from langchain_openai import ChatOpenAI
-from langchain_community.llms import Ollama
+from langchain_openai import ChatOpenAI
 
 load_dotenv()
 
 # llm = ChatOpenAI(temperature=0, model_name="gpt-4-0125-preview")
-
-llm = Ollama(model="mixtral:instruct",
-             temperature=0)
+llm = ChatOpenAI(temperature=0, model_name="gpt-3.5-turbo-0125")
 
 template = """
 
