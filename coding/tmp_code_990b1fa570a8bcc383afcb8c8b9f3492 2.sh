@@ -1,1 +1,0 @@
-python tesla_stock_plot.py

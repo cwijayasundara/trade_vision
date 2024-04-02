@@ -4,7 +4,6 @@ import yfinance as yf
 from datetime import datetime
 
 from retriever import vector_db_reader
-from studio_app import execute_autogen_studio
 from research_team import trigger_research_team
 from util.file_util import read_file
 from summeriser.formatter import format_text
@@ -12,6 +11,7 @@ from news_analysis.news_analysis import get_news_for_ticker, analyse_sentiment_d
 from finance_analyser.finance_analyser import get_finantial_insights
 from market_info.yfinance_wrapper import (get_stock_info, get_income_statement, extract_future_outlook)
 from risk_simulation import construct_simulation
+from stock_investigator import trigger_code_executor_agent
 
 k_8_summeries = {
     'Tesla': 'docs/k_8_sum/tesla_8_k_summary.txt',
@@ -49,9 +49,8 @@ with st.sidebar:
         ("stock highlights !",
          "highlights-from-knowledge-base",
          "chat-with-knowledge-base",
-         "stock-performance: autogen",
+         "tools: stock price investigations",
          "market-research: autogen",
-         "tools: stock investigations",
          "tools: stock predictions",
          "tools: monte carlo simulation",
          "tools: stock analyst",
@@ -236,31 +235,35 @@ elif add_radio == "chat-with-knowledge-base":
         chat_result = vector_db_reader(request)
         st.write(format_text(chat_result))
 
-elif add_radio == "stock-performance: autogen":
+elif add_radio == "tools: stock price investigations":
     st.image("images/autogen_2.png", use_column_width=True)
+    st.markdown(''' :orange[Visit http://localhost:8081 for interactive investigative tool !]''',
+                unsafe_allow_html=True)
+    image_name = st.text_input("Enter the image name to save the plot", "stock_prices.png")
+    image_location_str = "Execute the generated code and save the result to a file named " + image_name
     stock_queries = [f"",
-                     f"Plot a chart of to show {option} stock price movement for the past 5 years? Execute the "
-                     f"generated code and save the result to a file named {option}_stock_prices_for_5_years.png",
-                     f"Plot a chart of to show {option} stock price movement for the last week? Execute the generated "
-                     f"code and Save the result to a file named {option}_stock_prices_for_last_week.png",
-                     f"Plot a chart of NVDA and TESLA stock price YTD. Execute the code and save the result to a file "
-                     f"named nvda_tesla.png"]
-
+                     f"Plot a chart of to show {option} stock price movement for the past 5 years? "
+                     f"{image_location_str}",
+                     f"Plot a chart of to show {option} stock price movement for the last week? {image_location_str}",
+                     f"Plot a chart of NVDA and TESLA stock price YTD. {image_location_str}",]
     manual_mode = st.checkbox("manual mode")
     if manual_mode:
         stock_query_manual = st.text_input("How can I help you today?")
         st.write("E.g. Plot a graph to compare the stock price movement of the top 10 tech companies for the past 5 "
                  "years?")
         submit = st.button("submit", type="primary")
-        if stock_query_manual and submit:
-            chat_result = execute_autogen_studio(stock_query_manual)
+        stock_query_manual_str = stock_query_manual + " " + image_location_str
+        if stock_query_manual_str and submit:
+            chat_result = trigger_code_executor_agent(stock_query_manual_str)
+            st.image("code/" + image_name, use_column_width=True)
             st.write(chat_result)
     else:
         stock_query = st.selectbox(f'Select {option} stock query ?', stock_queries)
         if stock_query:
             submit = st.button("submit", type="primary")
-            if submit:
-                chat_result = execute_autogen_studio(stock_query)
+            if image_name and submit:
+                chat_result = trigger_code_executor_agent(stock_query)
+                st.image("code/" + image_name, use_column_width=True)
                 st.write(chat_result)
 
 elif add_radio == "market-research: autogen":
@@ -284,12 +287,6 @@ elif add_radio == "market-research: autogen":
             chat_result = trigger_research_team(research_query)
             st.write(chat_result)
 
-elif add_radio == "tools: stock investigations":
-    st.image("images/autogen_studio.png", use_column_width=True)
-    st.write("Please visit the following links to access the stock investigation tool")
-    st.write("http://localhost:8001/")
-
-
 elif add_radio == "tools: stock predictions":
     st.image("images/task_weaver_2.png", use_column_width=True)
     st.write("Please visit the following link to access the stock price prediction tool")
@@ -305,10 +302,8 @@ elif add_radio == "tools: monte carlo simulation":
         var, conditional_var, probability_of_success = construct_simulation(ticker_map[option], int(initial_investment),
                                                                             int(num_simulations), int(forecast_days),
                                                                             float(desired_return))
-
         st.write(f"Value at Risk (95% confidence): £{var:,.2f}")
         st.write(f"Expected Tail Loss (Conditional VaR): £{conditional_var:,.2f}")
-
         desired_return_percent = desired_return * 100
         probability_of_success_percent = probability_of_success * 100
         st.write(

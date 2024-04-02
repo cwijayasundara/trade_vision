@@ -16,6 +16,3 @@ langchainhub
 langchain
 autogenstudio
 plotly
-crewai
-crewai-tools
-sec-api
