@@ -16,3 +16,4 @@ langchainhub
 langchain
 autogenstudio
 plotly
+scikit-learn

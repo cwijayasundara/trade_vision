@@ -12,6 +12,7 @@ from finance_analyser.finance_analyser import get_finantial_insights
 from market_info.yfinance_wrapper import (get_stock_info, get_income_statement, extract_future_outlook)
 from risk_simulation import construct_simulation
 from stock_investigator import trigger_code_executor_agent
+from stock_price_pred.streamlit_stock_pred import predict_stock_price
 
 k_8_summeries = {
     'Tesla': 'docs/k_8_sum/tesla_8_k_summary.txt',
@@ -49,12 +50,11 @@ with st.sidebar:
         ("stock highlights !",
          "highlights-from-knowledge-base",
          "chat-with-knowledge-base",
-         "tools: stock price investigations",
+         "tools: stock price investigator",
          "market-research: autogen",
          "tools: stock predictions",
          "tools: monte carlo simulation",
-         "tools: stock analyst",
-         "final report"
+         "final report",
          "about trade vision")
     )
 
@@ -68,6 +68,7 @@ if add_radio == "stock highlights !":
 
     with tab1:
         st.subheader("""Nasdaq price prediction for """ + selected_stock)
+
         if option == "Tesla":
             st.image("images/tsla_pred.png", use_column_width=True)
         elif option == "Nvidia":
@@ -75,6 +76,7 @@ if add_radio == "stock highlights !":
         elif option == "Alphabet":
             st.image("images/googl_pred.png", use_column_width=True)
 
+        predict_stock_price(selected_stock)
         stock_info = get_stock_info(ticker_map[option])
         st.write(stock_info)
 
@@ -235,7 +237,7 @@ elif add_radio == "chat-with-knowledge-base":
         chat_result = vector_db_reader(request)
         st.write(format_text(chat_result))
 
-elif add_radio == "tools: stock price investigations":
+elif add_radio == "tools: stock price investigator":
     st.image("images/autogen_2.png", use_column_width=True)
     st.markdown(''' :orange[Visit http://localhost:8081 for interactive investigative tool !]''',
                 unsafe_allow_html=True)
@@ -310,7 +312,7 @@ elif add_radio == "tools: monte carlo simulation":
             f"Probability of achieving at least a {desired_return * 100}% return: {probability_of_success * 100:.2f}%")
         st.image('risk_simulation.png', use_column_width=True)
 
-elif add_radio == "tools: stock analyst":
+elif add_radio == "final report":
     st.image("images/crew_ai.png", use_column_width=True)
     st.subheader(f"Crew AI Market Analysis: {option}")
     if option == "Tesla":
@@ -324,9 +326,6 @@ elif add_radio == "tools: stock analyst":
         st.write(format_text(analysis))
     st.markdown("To access the stock analyst tool , please visit the following link: [Stock Analyst :Crew AI]("
                 "http://localhost:8003/)")
-
-elif add_radio == "final report":
-    st.write("Under construction !")
 
 elif add_radio == "about trade vision":
     st.write("Trade Vision is a tool that provides insights into stock market data, financial reports, and market "
