@@ -2,12 +2,14 @@ import ssl
 from urllib.request import urlopen, Request
 from bs4 import BeautifulSoup
 import pandas as pd
-
+import streamlit as st
 from news_sentiment_analyser import analyse_sentiment_list, analyse_sentiment
 
 ssl._create_default_https_context = ssl._create_unverified_context
 
 finviz_url = 'https://finviz.com/quote.ashx?t='
+
+st.cache_data
 
 
 def get_news_for_ticker(ticker):
@@ -36,6 +38,9 @@ def get_news_for_ticker(ticker):
     """ return the first 30 news items"""
     news = news.head(30)
     return news
+
+
+st.cache_data
 
 
 def analyse_sentiment_df(news_df):

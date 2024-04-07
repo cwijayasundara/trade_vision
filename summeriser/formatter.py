@@ -2,6 +2,7 @@ from dotenv import load_dotenv
 from langchain.chains import LLMChain
 from langchain_core.prompts import PromptTemplate
 from langchain_openai import ChatOpenAI
+import streamlit as st
 
 load_dotenv()
 
@@ -28,6 +29,8 @@ input text: {text}
 prompt = PromptTemplate.from_template(template)
 
 llm_chain = LLMChain(prompt=prompt, llm=llm)
+
+st.cache_data
 
 
 def format_text(text):

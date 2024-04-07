@@ -7,7 +7,6 @@ from langchain_openai import ChatOpenAI
 load_dotenv()
 
 llm = ChatOpenAI(temperature=0, model_name="gpt-3.5-turbo-0125")
-
 # llm = ChatOpenAI(temperature=0, model_name="gpt-4-0125-preview")
 
 chain = load_summarize_chain(llm, chain_type="stuff")

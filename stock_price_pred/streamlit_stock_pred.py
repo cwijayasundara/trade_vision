@@ -44,7 +44,8 @@ def predict_stock_price(ticker):
         fig = go.Figure()
         fig.add_trace(go.Scatter(x=X_test_dates, y=y_test, mode='markers', name='Actual Price'))
         fig.add_trace(go.Scatter(x=X_test_dates, y=predictions, mode='lines', name='Predicted Price'))
-        fig.update_layout(title=f'Stock Price Prediction for {ticker}', xaxis_title='Date', yaxis_title='Stock Price')
+        fig.update_layout(title=f'Stock Price Prediction for {ticker} using Linear Regression Model',
+                          xaxis_title='Date', yaxis_title='Stock Price')
 
         st.plotly_chart(fig, use_container_width=True)
     else:

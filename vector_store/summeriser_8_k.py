@@ -7,7 +7,7 @@ load_dotenv()
 docs_to_summarise = {
     'tesla': '../docs/k_8/tsla-20240102-gen.pdf',
     'nvidia': '../docs/k_8/6498cd48-aa46-4547-bcd9-061f74e17c4e.pdf',
-    'alphabet': '../docs/k_8/7f7120e075a47cf9e0aa0d9c3607227a.pdf'
+    'alphabet': '../docs/k_8/7f7120e075a47cf9e0aa0d9c3607227a.pdf',
 }
 
 doc_summery_paths = {

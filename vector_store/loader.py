@@ -21,7 +21,7 @@ print(len(docs))
 
 persistent_dir = '../chroma_store'
 # Split
-text_splitter = RecursiveCharacterTextSplitter(chunk_size=1000, chunk_overlap=200)
+text_splitter = RecursiveCharacterTextSplitter(chunk_size=1500, chunk_overlap=50)
 splits = text_splitter.split_documents(docs)
 
 # save the splits
@@ -50,5 +50,5 @@ rag_chain = (
     | StrOutputParser()
 )
 
-response = rag_chain.invoke("What are the Primary Manufacturing Facilities of Tesla?")
+response = rag_chain.invoke("What are the five innovation platforms in this technological era?")
 print(response)

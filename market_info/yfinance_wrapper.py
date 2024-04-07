@@ -1,8 +1,10 @@
 import yfinance as yf
 import pandas as pd
 import datetime
+import streamlit as st
 
 
+@st.cache_data
 def get_stock_info(ticker):
     stock = yf.Ticker(ticker)
     info = stock.info
@@ -30,6 +32,7 @@ def get_stock_info(ticker):
     return summary
 
 
+@st.cache_data
 def get_income_statement(ticker):
     stock = yf.Ticker(ticker)
     income_stmt = stock.income_stmt
@@ -39,6 +42,7 @@ def get_income_statement(ticker):
     return formatted_income_stmt
 
 
+@st.cache_data
 def show_news(ticker):
     stock = yf.Ticker(ticker)
     news_items = stock.news
@@ -55,11 +59,13 @@ def show_news(ticker):
     return "\n".join(formatted_news)
 
 
+@st.cache_data
 def show_recommendations(ticker):
     stock = yf.Ticker(ticker)
     return stock.recommendations
 
 
+@st.cache_data
 def extract_future_outlook(ticker_symbol):
     ticker = yf.Ticker(ticker_symbol)
     info = ticker.info
@@ -76,8 +82,5 @@ def extract_future_outlook(ticker_symbol):
                f"- Earnings Growth: {future_outlook['Earnings Growth']}\n"
                f"- Forward P/E: {future_outlook['Forward P/E']}\n"
                f"- PEG Ratio: {future_outlook['PEG Ratio']}\n"
-               f"- Analyst Recommendations: {future_outlook['Analyst Recommendations']}\n"
                f"- Target Mean Price: {future_outlook['Target Mean Price']}")
     return summary
-
-

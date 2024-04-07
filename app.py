@@ -28,6 +28,7 @@ ticker_map = {
 
 os.environ['LANGCHAIN_TRACING_V2'] = 'true'
 os.environ['LANGCHAIN_ENDPOINT'] = 'https://api.smith.langchain.com'
+
 st.title("Trade Vision : Trading Reimagined !")
 options = ["Tesla", "Alphabet", "Nvidia"]
 
@@ -44,14 +45,14 @@ st.markdown(
 
 with st.sidebar:
     st.image("images/trade_vision_2.webp")
-    option = st.selectbox('Select Company ?', options)
+    option = st.selectbox('Select Company !', options)
     add_radio = st.radio(
-        "What do you want to help with today?",
+        "What can I do for you today?",
         ("stock highlights !",
          "highlights-from-knowledge-base",
          "chat-with-knowledge-base",
          "tools: stock price investigator",
-         "market-research: autogen",
+         "tools: market research",
          "tools: stock predictions",
          "tools: monte carlo simulation",
          "final report",
@@ -78,7 +79,8 @@ if add_radio == "stock highlights !":
 
         predict_stock_price(selected_stock)
         stock_info = get_stock_info(ticker_map[option])
-        st.write(stock_info)
+        st.subheader("""Company **info** for """ + selected_stock)
+        st.write(get_finantial_insights(stock_info))
 
     with tab2:
 
@@ -182,7 +184,7 @@ if add_radio == "stock highlights !":
         if display_analyst_rec.empty:
             st.write("No data available at the moment")
         else:
-            st.write(display_analyst_rec)
+            st.write(get_finantial_insights(display_analyst_rec))
 
 elif add_radio == "highlights-from-knowledge-base":
 
@@ -238,7 +240,7 @@ elif add_radio == "chat-with-knowledge-base":
         st.write(format_text(chat_result))
 
 elif add_radio == "tools: stock price investigator":
-    st.image("images/autogen_2.png", use_column_width=True)
+    st.image("images/trade_vision_1.webp", width=400)
     st.markdown(''' :orange[Visit http://localhost:8081 for interactive investigative tool !]''',
                 unsafe_allow_html=True)
     image_name = st.text_input("Enter the image name to save the plot", "stock_prices.png")
@@ -247,7 +249,7 @@ elif add_radio == "tools: stock price investigator":
                      f"Plot a chart of to show {option} stock price movement for the past 5 years? "
                      f"{image_location_str}",
                      f"Plot a chart of to show {option} stock price movement for the last week? {image_location_str}",
-                     f"Plot a chart of NVDA and TESLA stock price YTD. {image_location_str}",]
+                     f"Plot a chart of NVDA and TESLA stock price YTD. {image_location_str}", ]
     manual_mode = st.checkbox("manual mode")
     if manual_mode:
         stock_query_manual = st.text_input("How can I help you today?")
@@ -268,8 +270,8 @@ elif add_radio == "tools: stock price investigator":
                 st.image("code/" + image_name, use_column_width=True)
                 st.write(chat_result)
 
-elif add_radio == "market-research: autogen":
-    st.image("images/autogen_2.png", use_column_width=True)
+elif add_radio == "tools: market research":
+    st.image("images/trade_vision_1.webp", width=300)
     research_queries = [f"Research on news articles about {option} focusing on stock price performance?",
                         f"Research on market research reports {option} stock price predictions for 2024?",
                         f"Write a research report for an investor advising if {option} stock is a buy, sell or hold "
