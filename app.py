@@ -271,7 +271,7 @@ elif add_radio == "tools: stock price investigator":
                 st.write(chat_result)
 
 elif add_radio == "tools: market research":
-    st.image("images/trade_vision_1.webp", width=300)
+    st.image("images/trade_vision_1.webp", width=400)
     research_queries = [f"Research on news articles about {option} focusing on stock price performance?",
                         f"Research on market research reports {option} stock price predictions for 2024?",
                         f"Write a research report for an investor advising if {option} stock is a buy, sell or hold "
@@ -297,6 +297,7 @@ elif add_radio == "tools: stock predictions":
     st.write("http://localhost:8000/")
 
 elif add_radio == "tools: monte carlo simulation":
+    st.image("images/monte-carlo.webp", width=400)
     initial_investment = st.text_input("Enter the initial investment amount :", 10000)
     num_simulations = st.text_input("Enter the number of simulations :", 1000)
     forecast_days = st.text_input("Enter the forecast days :", 365)
@@ -343,13 +344,3 @@ elif add_radio == "about trade vision":
         st.write(introduction)
     with tab2:
         st.write("under construction !")
-        col1, col2 = st.columns(2)
-        with col1:
-            st.write("stock highlights")
-            st.write("highlights-from-knowledge-base")
-            st.write("chat-with-knowledge-base")
-            st.write("stock-performance: autogen")
-        with col2:
-            st.write("market-research: autogen")
-            st.write("stock-price-prediction: taskweaver")
-            st.write("buy-sell-hold: market_crew")
