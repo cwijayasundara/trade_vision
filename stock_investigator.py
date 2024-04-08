@@ -56,6 +56,6 @@ def trigger_code_executor_agent(message):
     return chat_result.chat_history
 
 
-response = trigger_code_executor_agent("Today is 29 March 2024. Write Python code to plot TSLA's and META's stock "
-                                       "price gains YTD, and save the plot to a file named 'stock_gains.png'.")
-print(response)
+# response = trigger_code_executor_agent("Today is 29 March 2024. Write Python code to plot TSLA's and META's stock "
+#                                        "price gains YTD, and save the plot to a file named 'stock_gains.png'.")
+# print(response)
